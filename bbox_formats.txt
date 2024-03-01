@@ -1,0 +1,11 @@
+COCO dataset: [x_min, y_min, width, height]
+YOLO: [x_center, y_center, width, height]
+
+Von CVAT exportiere ich die Bilder in VOLO format
+[x_center, y_center, width, height]
+
+
+[1508,2056,1282,1991]
+
+1508 - 1282 / 2 = 867
+2056 - 1991 / 2 = 1061
