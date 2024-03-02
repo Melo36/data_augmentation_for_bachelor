@@ -1,0 +1,26 @@
+<annotation>
+    <folder>xml files</folder>
+    <filename>img_258.jpg</filename>
+    <path>/Users/melo/Desktop/xml files/img_258.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>1080</width>
+        <height>1440</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>haferflocken_ja</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>561</xmin>
+            <ymin>305</ymin>
+            <xmax>1037</xmax>
+            <ymax>1032</ymax>
+        </bndbox>
+    </object>
+</annotation>
