@@ -7,6 +7,9 @@ import albumentations as A
 from PIL import Image
 
 
+IMAGE_NAME = 'product'
+
+
 def visualize(image):
     plt.figure(figsize=(10, 10))
     plt.axis("off")
@@ -18,7 +21,10 @@ def plot_example(image, bbox, index):
     img_bbox = image.copy()
     img_bbox = visualize_bbox(img_bbox, bbox, 'haferflocken_ja')
     img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    cv2.imwrite(f'augmented_images/images/img_{index}.jpg', img)
+    ok = cv2.imwrite(f'augmented_images/images/product_{index}.jpg', img)
+    if not ok:
+        print("Could not write")
+        return
     #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     #fig = plt.figure(figsize=(5, 5))
     #plt.imshow(img)
@@ -67,7 +73,7 @@ def open_image_and_bbox(name):
         for i in range(len(bbox) - 1):
             bbox_float[i] = float(bbox[i + 1])
 
-        return image, bbox_float
+        return image, bbox_float, class_type
 
     return image
 
@@ -82,23 +88,36 @@ def save_bbox(name, bbox, class_type):
 
 
 def perform_transformation(transforms, name, index='test'):
-    image, bbox_float = open_image_and_bbox(name)
+    image, bbox_float, class_type = open_image_and_bbox(name)
+    for i, value in enumerate(bbox_float):
+        if value < 0.0:
+            bbox_float[i] = 0
+        elif value > 1.0:
+            bbox_float[i] = 1
+
     transform = A.Compose(
         [transforms], bbox_params=A.BboxParams(format="yolo", label_fields=[])
     )
 
     bboxes = [bbox_float]
 
+    print(image.size)
+    width, height = image.size
+
     # transpose to get correct dimensions again
-    #image = image.transpose(method=Image.Transpose.TRANSPOSE)
-    #image = image.transpose(method=Image.FLIP_LEFT_RIGHT)
+    if width > height:
+        image = image.transpose(method=Image.Transpose.TRANSPOSE)
+        # TODO: es gibt manche Bilder bei denen darf man kein FLIP machen
+        # z.B. product_13.jpg, morgen rausfinden wieso
+        image = image.transpose(method=Image.FLIP_LEFT_RIGHT)
+
     image = np.array(image)
 
     augmentations = transform(image=image, bboxes=bboxes)
     augmented_img = augmentations['image']
     augmented_bbox = augmentations['bboxes'][0]
 
-    save_bbox(f'img_{index}', augmented_bbox, 0)
+    save_bbox(f'product_{index}', augmented_bbox, class_type)
     plot_example(augmented_img, augmented_bbox, index)
 
 
